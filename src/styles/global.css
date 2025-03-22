@@ -1,3 +1,18 @@
+:root {
+  --primary-color: #41644a;
+  --paper-color: #f1f0e9;
+  --white-color: #f1f0e9;
+  --red-color: #db2a2a;
+  --gray-color: rgb(187, 187, 187);
+  --cream-color: #f8d3c5;
+
+  --primary-duration: 0.3s;
+
+  --input-height: 50px;
+  --input-font-size: 1.2rem;
+  --header-height: 60px;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -9,6 +24,7 @@ html {
   font-family: sans-serif;
   font-size: 16px;
   font-weight: 500;
+  background-color: var(--paper-color);
   scroll-behavior: smooth;
 }
 
@@ -26,6 +42,23 @@ body,
   position: relative;
 }
 
+button {
+  font-size: inherit;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
+h1 {
+  font-size: 3rem;
+  color: var(--primary-color);
+}
+
 main {
   flex: 1 1 auto;
+}
+
+input {
+  border: none;
+  outline: none;
 }
