@@ -6,14 +6,14 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import Input from '../Input';
 import { validation, defaultValues } from './form';
-import { AuthContext } from '../AuthProvider';
 import { signIn, signUp } from '../../libs/http/auth';
 import Spinner from '../Spinner';
 import { User } from 'src/types';
 import Modal from '../Modal';
+import { Context } from '../Root';
 
 function Auth() {
-  const { handleLogin } = useContext(AuthContext);
+  const { handleLogin } = useContext(Context);
   const { pathname } = useLocation();
   const {
     handleSubmit,
