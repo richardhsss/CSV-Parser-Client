@@ -1,7 +1,10 @@
+import styles from './styles.module.css';
+import Table from 'src/components/Table';
+
 function Home() {
   return (
-    <section>
-      <h1>Home</h1>
+    <section className={styles.section}>
+      <Table />
     </section>
   );
 }

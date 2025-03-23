@@ -10,4 +10,5 @@
 
 .text {
   color: var(--white-color);
+  letter-spacing: 0.7px;
 }

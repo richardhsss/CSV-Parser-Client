@@ -13,6 +13,7 @@ export const API_ENDPOINTS = {
   SIGNOUT: `${GENERAL_PATH.AUTH}/signout`,
   SIGNIN: `${GENERAL_PATH.AUTH}/signin`,
   SIGNUP: `${GENERAL_PATH.AUTH}/signup`,
+  UPLOAD: '/upload',
 };
 
 export const ERROR_MESSAGES = {
@@ -26,3 +27,7 @@ export const ERROR_MESSAGES = {
 export const LOCAL_STORAGE_KEYS = {
   IS_LOGGED: 'isLogged',
 };
+
+export const TABLE_ROW_HEIGHT = 65;
+
+export const TABLE_COLUMN_WIDTH = 110;

@@ -15,32 +15,41 @@ import {
 } from 'src/utils/localStorage';
 import Spinner from '../Spinner';
 
-type AuthContextType = {
+type ContextType = {
   handleLogout: () => void;
   handleLogin: () => void;
   isUserLogged: boolean;
+  data: string[][];
+  handleChangeData: (data: string[][]) => void;
+  setData: (data: string[][]) => void;
 };
 
-export const AuthContext = createContext<AuthContextType>({
+export const Context = createContext<ContextType>({
   handleLogout: () => {},
   handleLogin: () => {},
+  handleChangeData: () => {},
+  setData: () => {},
   isUserLogged: false,
+  data: [],
 });
 
-function AuthProvider({ children }: PropsWithChildren) {
+function Root({ children }: PropsWithChildren) {
   const [isUserLogged, setIsUserLogged] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState<string[][]>([]);
+
+  const handleChangeData = (newData: string[][]) => {
+    setData((prev: string[][]) => [...prev, ...newData]);
+  };
 
   const handleLogout = useCallback(async () => {
     setIsLoading(true);
 
     try {
       await signOut();
+    } finally {
       removeItemStorage(LOCAL_STORAGE_KEYS.IS_LOGGED);
       setIsUserLogged(false);
-    } catch (error: any) {
-      alert(error?.response?.data?.message || ERROR_MESSAGES.SMTH_WRONG);
-    } finally {
       setIsLoading(false);
     }
   }, [setIsLoading, signOut, setIsUserLogged]);
@@ -58,12 +67,21 @@ function AuthProvider({ children }: PropsWithChildren) {
 
   return (
     <>
-      <AuthContext.Provider value={{ handleLogout, handleLogin, isUserLogged }}>
+      <Context.Provider
+        value={{
+          data,
+          handleChangeData,
+          handleLogout,
+          handleLogin,
+          isUserLogged,
+          setData,
+        }}
+      >
         {children}
-      </AuthContext.Provider>
+      </Context.Provider>
       {isLoading ? <>{createPortal(<Spinner />, document.body)}</> : null}
     </>
   );
 }
 
-export default AuthProvider;
+export default Root;

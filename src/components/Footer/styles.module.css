@@ -1,11 +1,13 @@
 .footer {
   width: 100%;
-  padding: 1rem;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--primary-color);
 }
 
 .text {
   color: var(--white-color);
   font-size: 1.2rem;
-  text-align: center;
 }

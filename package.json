@@ -15,6 +15,9 @@
     "react-hook-form": "^7.54.2",
     "react-router": "^7.4.0",
     "react-scripts": "5.0.1",
+    "react-virtualized": "^9.22.6",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "yup": "^1.6.1"
   },
   "devDependencies": {
@@ -23,6 +26,7 @@
     "@types/node": "^16.18.126",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
+    "@types/react-virtualized": "^9.22.2",
     "eslint": "8",
     "eslint-config-prettier": "^10.1.1",
     "eslint-import-resolver-typescript": "^4.2.2",
