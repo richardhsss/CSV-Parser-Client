@@ -6,7 +6,7 @@ import { Context } from '../Root';
 function ProtectedRoute() {
   const { isUserLogged } = useContext(Context);
 
-  return isUserLogged ? <Outlet /> : <Navigate to={PATH.SIGN_IN} replace />;
+  return isUserLogged ? <Outlet /> : <Navigate to={PATH.SIGN_UP} replace />;
 }
 
 export default ProtectedRoute;

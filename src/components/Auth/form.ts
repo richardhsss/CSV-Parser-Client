@@ -3,8 +3,10 @@ import { User } from 'src/types';
 import { object, string } from 'yup';
 
 export const defaultValues: User = {
-  email: '',
-  password: '',
+  // Hardcode
+  email: 'test@test.com',
+  // Hardcode
+  password: '123123123',
 };
 
 const MIN_PASSWORD_UNIT = 8;
