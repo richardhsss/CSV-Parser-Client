@@ -10,7 +10,7 @@ Make sure you have the following installed:
 
 ## 1. Clone the Repository
 ```sh
-git clone [https://github.com/your-username/your-repository.git](https://github.com/richardhsss/CSV-UI.git)
+git clone https://github.com/richardhsss/CSV-UI.git
 cd CSV-UI
 ```
 
