@@ -1,13 +1,30 @@
+.table {
+  border: 1px solid var(--primary-color);
+}
+
 .cell {
   padding: 0.3rem;
   width: 100%;
+  text-align: center;
   height: 100%;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
   line-clamp: 3;
   text-overflow: ellipsis;
-  border: 1px solid var(--gray-color);
+  border: 1px solid var(--primary-color);
   overflow: hidden;
   cursor: pointer;
+  transition: background-color var(--primary-duration);
+}
+
+.cell:hover {
+  background-color: var(--gray-color);
+}
+
+.title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

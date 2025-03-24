@@ -9,11 +9,10 @@ import { validation, defaultValues } from './form';
 import { signIn, signUp } from '../../libs/http/auth';
 import Spinner from '../Spinner';
 import { User } from 'src/types';
-import Modal from '../Modal';
 import { Context } from '../Root';
 
 function Auth() {
-  const { handleLogin } = useContext(Context);
+  const { handleLogin, setError } = useContext(Context);
   const { pathname } = useLocation();
   const {
     handleSubmit,
@@ -24,9 +23,7 @@ function Auth() {
     resolver: yupResolver(validation),
     defaultValues,
   });
-
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<null | string>(null);
 
   const isSignUp = useMemo(() => pathname === PATH.SIGN_UP, [pathname]);
 
@@ -54,63 +51,56 @@ function Auth() {
         setIsLoading(false);
       }
     },
-    [isSignUp, signUp, signIn, reset, handleLogin, setIsLoading]
+    [isSignUp, signUp, signIn, reset, handleLogin, setIsLoading, setError]
   );
 
-  const handleClose = () => {
-    setError(null);
-  };
-
   return (
-    <>
-      <section className={styles.section}>
-        <h1>{isSignUp ? 'Sign Up' : 'Sign In'}</h1>
+    <section className={styles.section}>
+      <h1>{isSignUp ? 'Sign Up' : 'Sign In'}</h1>
 
-        <form
-          autoComplete="off"
-          className={styles.form}
-          onSubmit={handleSubmit(handleAuthSubmit)}
+      <form
+        autoComplete="off"
+        className={styles.form}
+        onSubmit={handleSubmit(handleAuthSubmit)}
+      >
+        <Input
+          type="text"
+          name="email"
+          placeholder="Email"
+          register={register}
+          error={errors?.email?.message}
+          disabled={isLoading}
+        />
+
+        <Input
+          type="password"
+          name="password"
+          placeholder="Password"
+          register={register}
+          disabled={isLoading}
+          error={errors?.password?.message}
+        />
+
+        <button
+          className={styles.button}
+          type="submit"
+          disabled={isButtonDisabled}
         >
-          <Input
-            type="text"
-            name="email"
-            placeholder="Email"
-            register={register}
-            error={errors?.email?.message}
-            disabled={isLoading}
-          />
+          {isLoading ? <Spinner /> : isSignUp ? 'Register' : 'Login'}
+        </button>
+      </form>
 
-          <Input
-            type="password"
-            name="password"
-            placeholder="Password"
-            register={register}
-            disabled={isLoading}
-            error={errors?.password?.message}
-          />
+      <div className={styles.linkWrapper}>
+        <p>{isSignUp ? 'Have an account? ' : 'New user? '}</p>
 
-          <button
-            className={styles.button}
-            type="submit"
-            disabled={isButtonDisabled}
-          >
-            {isLoading ? <Spinner /> : isSignUp ? 'Register' : 'Login'}
-          </button>
-        </form>
-
-        <div className={styles.linkWrapper}>
-          <p>{isSignUp ? 'Have an account? ' : 'New user? '}</p>
-
-          <Link
-            className={styles.link}
-            to={isSignUp ? PATH.SIGN_IN : PATH.SIGN_UP}
-          >
-            {isSignUp ? 'Sign In' : 'Sign Up'}
-          </Link>
-        </div>
-      </section>
-      {error ? <Modal handleClose={handleClose} text={error} /> : null}
-    </>
+        <Link
+          className={styles.link}
+          to={isSignUp ? PATH.SIGN_IN : PATH.SIGN_UP}
+        >
+          {isSignUp ? 'Sign In' : 'Sign Up'}
+        </Link>
+      </div>
+    </section>
   );
 }
 
