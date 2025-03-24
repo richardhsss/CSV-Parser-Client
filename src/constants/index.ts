@@ -30,4 +30,4 @@ export const LOCAL_STORAGE_KEYS = {
 
 export const TABLE_ROW_HEIGHT = 65;
 
-export const TABLE_COLUMN_WIDTH = 110;
+export const TABLE_COLUMN_WIDTH = 150;

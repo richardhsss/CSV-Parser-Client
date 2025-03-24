@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { Grid, GridCellProps, InfiniteLoader } from 'react-virtualized';
 import styles from './styles.module.css';
 import { useCallback, useContext, useEffect, useState } from 'react';
@@ -7,45 +6,37 @@ import {
   TABLE_COLUMN_WIDTH,
   TABLE_ROW_HEIGHT,
 } from 'src/constants';
-import Modal from '../Modal';
 import { Context } from '../Root';
 import { getData } from 'src/libs/http/file';
 
 const Table = () => {
-  const { data, handleChangeData, handleLogout } = useContext(Context);
-  console.log('🚀 ~ Table ~ data:', data.length);
-
-  const [loadedRows, setLoadedRows] = useState(new Set<number>());
+  const {
+    data,
+    handleChangeData,
+    handleLogout,
+    isGlobalLoading,
+    setIsGlobalLoading,
+    setError,
+    isRowLoaded,
+    handleChangeLoadedRows,
+  } = useContext(Context);
   const [tableSize, setTableSize] = useState<{ width: number; height: number }>(
     { width: 400, height: 500 }
   );
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setLoading] = useState(false);
   const [hasNext, setHasNext] = useState(true);
 
-  const isRowLoaded = useCallback(
-    ({ index }: { index: number }) => loadedRows.has(index),
-    [loadedRows]
-  );
-
-  const loadMoreRows = useCallback(
+  const handleLoadRows = useCallback(
     async ({ startIndex }: { startIndex: number }) => {
-      if (!hasNext || isLoading) {
+      if (!hasNext || isGlobalLoading) {
         return;
       }
+
+      setIsGlobalLoading(true);
 
       const limit = 50;
       const nextIndex = startIndex + limit;
 
-      setLoadedRows((prev) => {
-        const newSet = new Set(prev);
-
-        for (let i = startIndex; i < nextIndex; i++) {
-          newSet.add(i);
-        }
-
-        return newSet;
-      });
+      handleChangeLoadedRows({ startIndex, nextIndex });
 
       try {
         const { data } = await getData({
@@ -64,9 +55,20 @@ const Table = () => {
         if (error?.response?.status === 401) {
           handleLogout();
         }
+      } finally {
+        setIsGlobalLoading(false);
       }
     },
-    [handleChangeData, handleLogout, hasNext]
+    [
+      handleChangeLoadedRows,
+      getData,
+      setHasNext,
+      handleChangeData,
+      handleLogout,
+      hasNext,
+      isGlobalLoading,
+      setIsGlobalLoading,
+    ]
   );
 
   const cell = useCallback(
@@ -82,11 +84,8 @@ const Table = () => {
     [data]
   );
 
-  const handleClose = () => {
-    setError(null);
-  };
-
   const handleResize = useCallback(() => {
+    // Get the header height variable from the style
     const headerHeightVariable =
       parseInt(
         getComputedStyle(document.documentElement).getPropertyValue(
@@ -99,26 +98,11 @@ const Table = () => {
       width: window.innerWidth - defaultEdges,
       height: window.innerHeight - defaultEdges - headerHeightVariable * 2,
     });
-  }, []);
-
-  const handleLoadMoreRows = useCallback(
-    async ({ startIndex }: { startIndex: number }) => {
-      setLoading(true);
-
-      try {
-        await loadMoreRows({ startIndex });
-      } catch (error: any) {
-        setError(error?.response?.data?.message || ERROR_MESSAGES.SMTH_WRONG);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [isLoading, loadMoreRows]
-  );
+  }, [setTableSize]);
 
   useEffect(() => {
     if (data.length === 0) {
-      loadMoreRows({ startIndex: 0 });
+      handleLoadRows({ startIndex: 0 });
     }
   }, [data.length]);
 
@@ -130,34 +114,36 @@ const Table = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  if (!data?.length || !data?.[0]?.length) {
+    return <h1 className={styles.title}>Data is empty</h1>;
+  }
+
   return (
-    <>
-      <InfiniteLoader
-        isRowLoaded={isRowLoaded}
-        loadMoreRows={handleLoadMoreRows}
-        rowCount={hasNext ? data.length + 50 : data.length}
-      >
-        {({ onRowsRendered, registerChild }) => (
-          <Grid
-            cellRenderer={cell}
-            columnCount={data[0]?.length || 0}
-            columnWidth={TABLE_COLUMN_WIDTH}
-            height={tableSize.height}
-            width={tableSize.width}
-            rowCount={data.length}
-            rowHeight={TABLE_ROW_HEIGHT}
-            onSectionRendered={({ rowStartIndex, rowStopIndex }) =>
-              onRowsRendered({
-                startIndex: rowStartIndex,
-                stopIndex: rowStopIndex,
-              })
-            }
-            ref={registerChild}
-          />
-        )}
-      </InfiniteLoader>
-      {error ? <Modal handleClose={handleClose} text={error} /> : null}
-    </>
+    <InfiniteLoader
+      isRowLoaded={isRowLoaded}
+      loadMoreRows={handleLoadRows}
+      rowCount={hasNext ? data.length + 50 : data.length}
+    >
+      {({ onRowsRendered, registerChild }) => (
+        <Grid
+          className={styles.table}
+          cellRenderer={cell}
+          columnCount={data[0]?.length || 0}
+          rowCount={hasNext ? data.length + 1 : data.length}
+          columnWidth={TABLE_COLUMN_WIDTH}
+          width={tableSize.width}
+          height={tableSize.height}
+          rowHeight={TABLE_ROW_HEIGHT}
+          onSectionRendered={({ rowStartIndex, rowStopIndex }) =>
+            onRowsRendered({
+              startIndex: rowStartIndex,
+              stopIndex: rowStopIndex,
+            })
+          }
+          ref={registerChild}
+        />
+      )}
+    </InfiniteLoader>
   );
 };
 
