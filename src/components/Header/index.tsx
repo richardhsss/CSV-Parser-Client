@@ -14,6 +14,7 @@ function Header() {
     setIsGlobalLoading,
     isGlobalLoading,
     setLoadedRows,
+    setHasNext,
   } = useContext(Context);
 
   const handleFileChange = useCallback(
@@ -33,6 +34,7 @@ function Header() {
         const { data } = await upload(formData);
         setData(data.data);
         setLoadedRows(new Set());
+        setHasNext(true);
       } catch (error: any) {
         setError(error?.response?.data?.message || ERROR_MESSAGES.SMTH_WRONG);
 

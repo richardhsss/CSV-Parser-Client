@@ -19,11 +19,12 @@ const Table = () => {
     setError,
     isRowLoaded,
     handleChangeLoadedRows,
+    hasNext,
+    setHasNext,
   } = useContext(Context);
   const [tableSize, setTableSize] = useState<{ width: number; height: number }>(
     { width: 400, height: 500 }
   );
-  const [hasNext, setHasNext] = useState(true);
 
   const handleLoadRows = useCallback(
     async ({ startIndex }: { startIndex: number }) => {

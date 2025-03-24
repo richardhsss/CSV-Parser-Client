@@ -35,6 +35,8 @@ type ContextType = {
   }) => void;
   isRowLoaded: ({ index }: { index: number }) => boolean;
   setLoadedRows: (value: Set<number>) => void;
+  hasNext: boolean;
+  setHasNext: (value: boolean) => void;
 };
 
 export const Context = createContext<ContextType>({
@@ -50,6 +52,8 @@ export const Context = createContext<ContextType>({
   isRowLoaded: () => false,
   handleChangeLoadedRows: () => {},
   setLoadedRows: () => {},
+  setHasNext: () => {},
+  hasNext: true,
 });
 
 function Root({ children }: PropsWithChildren) {
@@ -58,6 +62,7 @@ function Root({ children }: PropsWithChildren) {
   const [error, setError] = useState<string | null>(null);
   const [isGlobalLoading, setIsGlobalLoading] = useState(false);
   const [loadedRows, setLoadedRows] = useState(new Set<number>());
+  const [hasNext, setHasNext] = useState(true);
 
   const handleChangeData = (newData: string[][]) => {
     setData((prev: string[][]) => [...prev, ...newData]);
@@ -136,6 +141,8 @@ function Root({ children }: PropsWithChildren) {
           isRowLoaded,
           handleChangeLoadedRows,
           setLoadedRows,
+          setHasNext,
+          hasNext,
         }}
       >
         {children}
